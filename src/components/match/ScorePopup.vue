@@ -11,13 +11,20 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ confirm: [battlefield: Battlefield, turn: number]; cancel: [] }>()
 
-const battlefield = ref<Battlefield>('mine')
+const battlefield = ref<Battlefield | null>(null)
 const turn = ref(props.currentTurn)
 const padOpen = ref(false)
-const alreadyScored = computed(() => props.scoredIn(turn.value).includes(battlefield.value))
+const alreadyScored = computed(
+  () => battlefield.value !== null && props.scoredIn(turn.value).includes(battlefield.value),
+)
+const canConfirm = computed(() => battlefield.value !== null && !alreadyScored.value)
+
+function confirm() {
+  if (battlefield.value) emit('confirm', battlefield.value, turn.value)
+}
 
 const seg = (active: boolean) =>
-  `min-h-12 flex-1 rounded-lg text-base font-semibold ${active ? 'bg-amber-400 text-slate-950' : 'bg-slate-700 text-slate-100'}`
+  `min-h-12 flex-1 rounded-lg px-2 text-base font-semibold ${active ? 'bg-amber-400 text-slate-950' : 'bg-slate-700 text-slate-100'}`
 </script>
 
 <template>
@@ -31,9 +38,12 @@ const seg = (active: boolean) =>
       @cancel="padOpen = false"
     />
     <div v-else class="flex flex-col gap-3">
+      <p class="text-center text-sm text-slate-400">Which battlefield was scored?</p>
       <div class="flex gap-2" role="group" aria-label="Battlefield">
-        <button type="button" :class="seg(battlefield === 'mine')" @click="battlefield = 'mine'">My</button>
-        <button type="button" :class="seg(battlefield === 'opponent')" @click="battlefield = 'opponent'">Opponent</button>
+        <button type="button" :class="seg(battlefield === 'mine')" @click="battlefield = 'mine'">My battlefield</button>
+        <button type="button" :class="seg(battlefield === 'opponent')" @click="battlefield = 'opponent'">
+          Opponent's battlefield
+        </button>
       </div>
       <button
         type="button"
@@ -54,8 +64,8 @@ const seg = (active: boolean) =>
       <button
         type="button"
         class="min-h-12 rounded-lg bg-emerald-500 text-base font-bold text-slate-950 disabled:opacity-40"
-        :disabled="alreadyScored"
-        @click="emit('confirm', battlefield, turn)"
+        :disabled="!canConfirm"
+        @click="confirm"
       >
         Score Point +1
       </button>

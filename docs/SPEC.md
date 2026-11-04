@@ -135,7 +135,9 @@ Also on the screen:
 
 ### 3.5 Score Pop-up (faces the player who opened it)
 
-- **Battlefield:** segmented toggle `My` / `Opponent` — whose battlefield the point was scored on.
+- **Battlefield:** segmented toggle `My battlefield` / `Opponent's battlefield` — whose battlefield the point
+  was scored on. Nothing is preselected; the player must choose one, and **Score Point +1** stays
+  disabled until they do.
 - **Turn:** pre-filled with the current global turn (see 4.2), so players normally never touch it.
   Tapping it opens a **numeric keypad** to correct it — the exception, for points entered late.
   A corrected value must be between 1 and the current turn (inclusive).
