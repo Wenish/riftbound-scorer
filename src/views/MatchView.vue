@@ -80,7 +80,6 @@ onUnmounted(() => {
   void release()
 })
 
-const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
 </script>
 
 <template>
