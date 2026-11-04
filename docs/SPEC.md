@@ -111,7 +111,7 @@ The screen is split horizontally into two halves:
 Each half contains:
 
 - **Score track** (shared, one upright column along the left edge, not mirrored): each player's 0 is at their own outer end and the single **8** sits at the centre divider. The bottom player's score climbs from the bottom, the top player's descends from the top; each current score is **highlighted** in the player's colour (bottom blue, top rose, matching the dot by their name). Players start at 0.
-- **Score log inside the track:** each track row shows the code (see 3.6) of the event that raised that player's score to that step, e.g. `CMT2`, `HOT4`; the 8 row shows the winning code. Events that awarded no point are shown struck-through on the row of the player's score at that time. There is no separate log list.
+- **Score log inside the track:** each track row shows the code (see 3.6) of the event that raised that player's score to that step, e.g. `CMT2`, `HOT4`; the 8 row shows the winning code. Events that awarded no point are shown struck-through on the row of the player's score at that time. There is no separate log list. The top player's step numbers and codes are rotated 180° so they face that player (the 8 row faces the winner, upright until someone reaches 8).
 - **Player name.**
 - Action buttons:
   - **Conquer** → opens the Score Pop-up (type = conquer).

@@ -2,6 +2,7 @@
 // One shared vertical track for both players, never rotated.
 // Top player (1) climbs 0 -> 7 from the top edge, bottom player (0) from the bottom edge;
 // the single "8" (win) sits in the middle cell, aligned with the centre divider.
+// Top player's entries are rotated 180 so they face that player.
 // Each row also shows the score codes that produced that step (SPEC 3.4).
 import { computed } from 'vue'
 import { WIN_SCORE, scoreCode, type ScoreEvent } from '../../game'
@@ -40,8 +41,8 @@ const idle = 'bg-slate-800 text-slate-500'
         :class="n === scores[1] ? topCls : idle"
         :aria-current="n === scores[1] ? 'true' : undefined"
       >
-        <span class="w-3 shrink-0 text-center font-semibold">{{ n }}</span>
-        <span class="min-w-0 flex-1 truncate whitespace-nowrap font-mono">
+        <span class="w-3 shrink-0 rotate-180 text-center font-semibold">{{ n }}</span>
+        <span class="min-w-0 flex-1 rotate-180 truncate whitespace-nowrap font-mono">
           <template v-for="(c, i) in rows[1][n]" :key="i"
             ><span :class="c.denied ? 'line-through opacity-60' : 'text-slate-100'" :style="n === scores[1] ? { color: 'inherit' } : undefined">{{ c.code }}</span
             >{{ ' ' }}</template
@@ -53,8 +54,11 @@ const idle = 'bg-slate-800 text-slate-500'
       class="flex h-14 shrink-0 items-center gap-1 overflow-hidden rounded px-1 text-base font-bold"
       :class="scores[1] >= WIN_SCORE ? topCls : scores[0] >= WIN_SCORE ? bottomCls : 'bg-amber-400 text-slate-950'"
     >
-      <span class="w-3 shrink-0 text-center">{{ WIN_SCORE }}</span>
-      <span class="min-w-0 flex-1 truncate whitespace-nowrap font-mono text-xs font-semibold">
+      <span class="w-3 shrink-0 text-center" :class="{ 'rotate-180': scores[1] >= WIN_SCORE }">{{ WIN_SCORE }}</span>
+      <span
+        class="min-w-0 flex-1 truncate whitespace-nowrap font-mono text-xs font-semibold"
+        :class="{ 'rotate-180': scores[1] >= WIN_SCORE }"
+      >
         <template v-for="(c, i) in winCodes" :key="i"
           ><span :class="c.denied ? 'line-through opacity-60' : ''">{{ c.code }}</span
           >{{ ' ' }}</template
