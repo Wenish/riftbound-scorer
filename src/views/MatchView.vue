@@ -111,21 +111,22 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
     </div>
 
     <!-- Centre divider: timers duplicated so both players can read them -->
-    <div class="flex h-14 shrink-0 items-center justify-between gap-2 border-y border-slate-600 bg-slate-950 px-3">
-      <div v-for="rot in [true, false]" :key="String(rot)" class="text-center leading-tight" :class="rot ? 'rotate-180' : ''">
-        <div class="text-xs text-slate-400">Turn {{ state.currentTurn }} · {{ formatDuration(turnDuration) }}</div>
-        <div class="text-lg font-bold tabular-nums">{{ formatDuration(state.gameDuration) }}</div>
+    <div class="grid h-14 shrink-0 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-1 overflow-hidden border-y border-slate-600 bg-slate-950 px-1">
+      <div v-for="rot in [true, false]" :key="String(rot)" :class="[rot ? 'order-1 rotate-180' : 'order-3', 'min-w-0 text-center leading-none']">
+        <div class="whitespace-nowrap text-sm font-bold">Turn {{ state.currentTurn }}</div>
+        <div class="whitespace-nowrap text-sm font-semibold tabular-nums text-slate-50">{{ formatDuration(turnDuration) }}</div>
+        <div class="mt-0.5 whitespace-nowrap text-[10px] tabular-nums text-slate-500">{{ formatDuration(state.gameDuration) }}</div>
       </div>
-      <div class="flex gap-2">
+      <div class="order-2 flex shrink-0 gap-1">
         <button
           type="button"
-          class="min-h-11 min-w-11 rounded-lg bg-slate-700 px-3 text-sm font-semibold disabled:opacity-40"
+          class="min-h-11 min-w-11 rounded-lg bg-slate-700 px-2 text-sm font-semibold disabled:opacity-40"
           :disabled="state.isOver"
           @click="guarded(() => (state!.isPaused ? matches.resumeTimer() : matches.pause()))"
         >
           {{ state.isPaused ? 'Resume' : 'Pause' }}
         </button>
-        <button type="button" class="min-h-11 min-w-11 rounded-lg bg-slate-700 px-3 text-sm font-semibold" @click="leave">
+        <button type="button" class="min-h-11 min-w-11 rounded-lg bg-slate-700 px-2 text-sm font-semibold" @click="leave">
           Home
         </button>
       </div>
