@@ -9,6 +9,8 @@ defineProps<{
   hint: string | null
   toast: string | null
   disabled: boolean
+  scoreDisabled: boolean
+  passDisabled: boolean
   player: PlayerIndex
   opponentName: string
 }>()
@@ -19,7 +21,7 @@ function confirmResign() {
   emit('resign')
 }
 
-const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:opacity-40'
+const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-500'
 </script>
 
 <template>
@@ -48,10 +50,10 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:opacity-40'
       {{ toast }}
     </p>
     <div class="grid shrink-0 grid-cols-3 gap-1.5">
-      <button type="button" :class="[btn, 'bg-sky-500 text-slate-950']" :disabled="disabled" @click="emit('conquer')">Conquer</button>
-      <button type="button" :class="[btn, 'bg-indigo-400 text-slate-950']" :disabled="disabled" @click="emit('hold')">Hold</button>
+      <button type="button" :class="[btn, 'bg-sky-500 text-slate-950']" :disabled="disabled || scoreDisabled" @click="emit('conquer')">Conquer</button>
+      <button type="button" :class="[btn, 'bg-indigo-400 text-slate-950']" :disabled="disabled || scoreDisabled" @click="emit('hold')">Hold</button>
       <button type="button" :class="[btn, 'bg-fuchsia-400 text-slate-950']" :disabled="disabled" @click="emit('special')">Special +1</button>
-      <button type="button" :class="[btn, 'col-span-2 bg-slate-600']" :disabled="disabled" @click="emit('pass')">Pass Turn</button>
+      <button type="button" :class="[btn, 'col-span-2 bg-slate-600']" :disabled="disabled || passDisabled" @click="emit('pass')">Pass Turn</button>
       <button type="button" :class="[btn, 'bg-slate-700']" @click="emit('undo')">Undo</button>
     </div>
     <div v-if="confirming" class="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90 p-3" role="dialog" aria-modal="true">
