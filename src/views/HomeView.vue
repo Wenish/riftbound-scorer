@@ -72,7 +72,7 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <section class="mx-auto flex min-h-dvh max-w-md flex-col gap-4 p-4">
+  <section class="mx-auto flex min-h-safe-dvh max-w-md flex-col gap-4 p-4">
     <header class="flex items-center justify-between">
       <h1 class="text-2xl font-bold">Match History</h1>
       <button

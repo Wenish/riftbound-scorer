@@ -83,7 +83,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section v-if="match && state" class="flex h-dvh overflow-hidden bg-slate-950">
+  <section v-if="match && state" class="flex h-safe-dvh overflow-hidden bg-slate-950">
     <!-- Shared score track: one upright column, outside the rotated top half -->
     <ScoreTrack :scores="[state.scores[0], state.scores[1]]" :events="[pointLog(match, 0), pointLog(match, 1)]" />
     <div class="flex min-w-0 flex-1 flex-col">

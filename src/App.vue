@@ -23,7 +23,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main class="min-h-dvh bg-slate-950 text-slate-100">
+  <main class="safe-area min-h-dvh bg-slate-950 text-slate-100">
     <p v-if="nav.view === 'loading'" class="p-4 text-center text-slate-400">Loading…</p>
     <OnboardingView v-else-if="nav.view === 'onboarding'" />
     <HomeView v-else-if="nav.view === 'home'" />

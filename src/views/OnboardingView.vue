@@ -16,7 +16,7 @@ async function confirm() {
 </script>
 
 <template>
-  <section class="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-6 p-6">
+  <section class="mx-auto flex min-h-safe-dvh max-w-md flex-col justify-center gap-6 p-6">
     <h1 class="text-center text-3xl font-bold">Hello Riftbounder</h1>
     <form class="flex flex-col gap-4" @submit.prevent="confirm">
       <input

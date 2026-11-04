@@ -14,7 +14,7 @@ const state = computed(() => (match.value ? deriveState(match.value, match.value
 </script>
 
 <template>
-  <section class="mx-auto flex min-h-dvh max-w-md flex-col gap-4 p-4">
+  <section class="mx-auto flex min-h-safe-dvh max-w-md flex-col gap-4 p-4">
     <header class="flex items-center gap-3">
       <button type="button" class="min-h-11 rounded-lg border border-slate-500 px-4" @click="nav.navigate('home')">
         Back
