@@ -1,9 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <!--
     Riftbound Scorer — master app icon (original artwork).
-    A faceted crystal split by a glowing rift into two player halves (cyan = opponent on top,
-    amber = you at the bottom); the rift and outline are point-symmetric (180°), like the split screen.
-    The ring of 8 segments is the 0 → 8 score track, some segments lit.
+    A faceted crystal split by a straight, glowing horizontal rift into two player halves:
+    red team = opponent on top, blue team = you at the bottom, like the split match screen.
+    The ring of 16 segments is the score track, 8 per player (0 → 8): the 8 upper segments are red,
+    the 8 lower ones blue; the two groups split at 9 and 3 o'clock, in line with the rift.
+    Lit segments count from the left end of each half (9 o'clock): red runs clockwise over the top
+    (3 of 8 lit), blue runs counter-clockwise under the bottom (5 of 8 lit). Unlit segments are dim
+    versions of their team colour.
     Full-bleed square, no rounded corners: platforms apply their own mask.
     Key content stays within a ~800 px circle (safe zone).
   -->
@@ -13,39 +17,50 @@
       <stop offset="0.55" stop-color="#0a1230"/>
       <stop offset="1" stop-color="#020618"/>
     </radialGradient>
-    <radialGradient id="halo" cx="512" cy="512" r="330" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.22"/>
-      <stop offset="1" stop-color="#7dd3fc" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="cyan" x1="400" y1="212" x2="640" y2="560" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#67e8f9"/>
-      <stop offset="1" stop-color="#0891b2"/>
+    <!-- Halo: red above the rift fading into blue below, faded out radially by a mask. -->
+    <linearGradient id="halo-tint" x1="0" y1="182" x2="0" y2="842" gradientUnits="userSpaceOnUse">
+      <stop offset="0.4" stop-color="#ff6b6b" stop-opacity="0.22"/>
+      <stop offset="0.6" stop-color="#5aaeff" stop-opacity="0.26"/>
     </linearGradient>
-    <linearGradient id="amber" x1="400" y1="470" x2="640" y2="812" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#fcd34d"/>
-      <stop offset="1" stop-color="#d97706"/>
+    <radialGradient id="halo-falloff" cx="512" cy="512" r="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#000000"/>
+    </radialGradient>
+    <mask id="halo-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1024" height="1024">
+      <circle cx="512" cy="512" r="330" fill="url(#halo-falloff)"/>
+    </mask>
+    <linearGradient id="red" x1="400" y1="212" x2="640" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff5f5f"/>
+      <stop offset="0.5" stop-color="#e53935"/>
+      <stop offset="1" stop-color="#b02525"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="400" y1="512" x2="640" y2="812" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7cc4ff"/>
+      <stop offset="0.5" stop-color="#2f80ed"/>
+      <stop offset="1" stop-color="#1f5fcf"/>
     </linearGradient>
 
     <!-- Crystal silhouette: elongated hexagon centred on (512, 512). -->
     <polygon id="gem" points="512,212 684,384 684,640 512,812 340,640 340,384"/>
     <clipPath id="gem-clip"><use href="#gem"/></clipPath>
 
-    <!-- Rift: zigzag through the centre, point-symmetric about (512, 512). -->
-    <clipPath id="top-half"><polygon points="0,0 1024,0 1024,480 724,480 574,538 512,512 450,486 300,544 0,544"/></clipPath>
-    <clipPath id="bottom-half"><polygon points="0,1024 1024,1024 1024,480 724,480 574,538 512,512 450,486 300,544 0,544"/></clipPath>
+    <!-- Rift: a straight horizontal line through the centre (y = 512). -->
+    <clipPath id="top-half"><rect x="0" y="0" width="1024" height="512"/></clipPath>
+    <clipPath id="bottom-half"><rect x="0" y="512" width="1024" height="512"/></clipPath>
 
     <!-- Facet shading (light from the top left), shared by both halves. -->
     <g id="facets">
       <polygon points="340,384 512,212 512,318 450,404" fill="#ffffff" fill-opacity="0.38"/>
       <polygon points="512,212 684,384 574,404 512,318" fill="#ffffff" fill-opacity="0.14"/>
       <polygon points="684,384 684,640 574,620 574,404" fill="#000000" fill-opacity="0.18"/>
-      <polygon points="684,640 512,812 512,706 574,620" fill="#000000" fill-opacity="0.34"/>
-      <polygon points="512,812 340,640 450,620 512,706" fill="#000000" fill-opacity="0.12"/>
+      <polygon points="684,640 512,812 512,706 574,620" fill="#000000" fill-opacity="0.30"/>
+      <polygon points="512,812 340,640 450,620 512,706" fill="#000000" fill-opacity="0.10"/>
       <polygon points="340,640 340,384 450,404 450,620" fill="#ffffff" fill-opacity="0.18"/>
       <polygon points="512,318 574,404 574,620 512,706 450,620 450,404" fill="#ffffff" fill-opacity="0.08"/>
     </g>
 
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <!-- User-space region: the rift is a horizontal line, so its bounding box has zero height. -->
+    <filter id="rift-glow" filterUnits="userSpaceOnUse" x="240" y="432" width="544" height="160">
       <feGaussianBlur stdDeviation="10"/>
     </filter>
     <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -53,58 +68,69 @@
     </filter>
   </defs>
 
-  <!-- Background -->
+  <!-- Background and a red-over-blue halo behind the crystal. -->
   <rect width="1024" height="1024" fill="url(#bg)"/>
-  <circle cx="512" cy="512" r="330" fill="url(#halo)"/>
+  <circle cx="512" cy="512" r="330" fill="url(#halo-tint)" mask="url(#halo-mask)"/>
 
-  <!-- Score track: 8 segments, gaps on the horizontal line of the rift. -->
+  <!-- Score track: 16 segments (22.5° slots, 13° arcs), groups split at 9 and 3 o'clock. -->
   <g fill="none" stroke-width="36" stroke-linecap="round">
-    <!-- top (opponent, cyan): 3 of 4 lit -->
-    <g stroke="#1e3a5f">
-      <path d="M803.6 284.2 A370 370 0 0 1 879.2 466.9"/>
+    <!-- top (opponent, red): 3 of 8 lit, counting clockwise from 9 o'clock -->
+    <g stroke="#5c1f2b">
+      <path d="M399.2 159.6 A370 370 0 0 1 481.4 143.3"/>
+      <path d="M542.6 143.3 A370 370 0 0 1 624.8 159.6"/>
+      <path d="M681.4 183.1 A370 370 0 0 1 751.1 229.6"/>
+      <path d="M794.4 272.9 A370 370 0 0 1 840.9 342.6"/>
+      <path d="M864.4 399.2 A370 370 0 0 1 880.7 481.4"/>
     </g>
-    <g stroke="#22d3ee" opacity="0.55" filter="url(#soft-glow)">
-      <path d="M144.8 466.9 A370 370 0 0 1 220.4 284.2"/>
-      <path d="M284.2 220.4 A370 370 0 0 1 466.9 144.8"/>
-      <path d="M557.1 144.8 A370 370 0 0 1 739.8 220.4"/>
+    <g stroke="#ff4f4f" opacity="0.55" filter="url(#soft-glow)">
+      <path d="M143.3 481.4 A370 370 0 0 1 159.6 399.2"/>
+      <path d="M183.1 342.6 A370 370 0 0 1 229.6 272.9"/>
+      <path d="M272.9 229.6 A370 370 0 0 1 342.6 183.1"/>
     </g>
-    <g stroke="#22d3ee">
-      <path d="M144.8 466.9 A370 370 0 0 1 220.4 284.2"/>
-      <path d="M284.2 220.4 A370 370 0 0 1 466.9 144.8"/>
-      <path d="M557.1 144.8 A370 370 0 0 1 739.8 220.4"/>
+    <g stroke="#ff4f4f">
+      <path d="M143.3 481.4 A370 370 0 0 1 159.6 399.2"/>
+      <path d="M183.1 342.6 A370 370 0 0 1 229.6 272.9"/>
+      <path d="M272.9 229.6 A370 370 0 0 1 342.6 183.1"/>
     </g>
-    <!-- bottom (you, amber): 2 of 4 lit -->
-    <g stroke="#3b2a1a">
-      <path d="M466.9 879.2 A370 370 0 0 1 284.2 803.6"/>
-      <path d="M220.4 739.8 A370 370 0 0 1 144.8 557.1"/>
+    <!-- bottom (you, blue): 5 of 8 lit, counting counter-clockwise from 9 o'clock -->
+    <g stroke="#1c3a6e">
+      <path d="M751.1 794.4 A370 370 0 0 1 681.4 840.9"/>
+      <path d="M840.9 681.4 A370 370 0 0 1 794.4 751.1"/>
+      <path d="M880.7 542.6 A370 370 0 0 1 864.4 624.8"/>
     </g>
-    <g stroke="#fbbf24" opacity="0.55" filter="url(#soft-glow)">
-      <path d="M879.2 557.1 A370 370 0 0 1 803.6 739.8"/>
-      <path d="M739.8 803.6 A370 370 0 0 1 557.1 879.2"/>
+    <g stroke="#3d9bff" opacity="0.55" filter="url(#soft-glow)">
+      <path d="M159.6 624.8 A370 370 0 0 1 143.3 542.6"/>
+      <path d="M229.6 751.1 A370 370 0 0 1 183.1 681.4"/>
+      <path d="M342.6 840.9 A370 370 0 0 1 272.9 794.4"/>
+      <path d="M481.4 880.7 A370 370 0 0 1 399.2 864.4"/>
+      <path d="M624.8 864.4 A370 370 0 0 1 542.6 880.7"/>
     </g>
-    <g stroke="#fbbf24">
-      <path d="M879.2 557.1 A370 370 0 0 1 803.6 739.8"/>
-      <path d="M739.8 803.6 A370 370 0 0 1 557.1 879.2"/>
+    <g stroke="#3d9bff">
+      <path d="M159.6 624.8 A370 370 0 0 1 143.3 542.6"/>
+      <path d="M229.6 751.1 A370 370 0 0 1 183.1 681.4"/>
+      <path d="M342.6 840.9 A370 370 0 0 1 272.9 794.4"/>
+      <path d="M481.4 880.7 A370 370 0 0 1 399.2 864.4"/>
+      <path d="M624.8 864.4 A370 370 0 0 1 542.6 880.7"/>
     </g>
   </g>
 
   <!-- Crystal: two halves -->
   <g clip-path="url(#gem-clip)">
     <g clip-path="url(#top-half)">
-      <use href="#gem" fill="url(#cyan)"/>
+      <use href="#gem" fill="url(#red)"/>
       <use href="#facets"/>
     </g>
     <g clip-path="url(#bottom-half)">
-      <use href="#gem" fill="url(#amber)"/>
+      <use href="#gem" fill="url(#blue)"/>
       <use href="#facets"/>
     </g>
   </g>
-  <use href="#gem" fill="none" stroke="#e0f2fe" stroke-opacity="0.35" stroke-width="6" stroke-linejoin="round"/>
+  <use href="#gem" fill="none" stroke="#f1f5ff" stroke-opacity="0.35" stroke-width="6" stroke-linejoin="round"/>
 
-  <!-- The rift: dark cut, glow, bright core. -->
-  <g fill="none" stroke-linejoin="round" stroke-linecap="round">
-    <polyline points="300,544 450,486 512,512 574,538 724,480" stroke="#020618" stroke-width="34" clip-path="url(#gem-clip)"/>
-    <polyline points="326,534 450,486 512,512 574,538 698,490" stroke="#e0f7ff" stroke-width="26" filter="url(#glow)"/>
-    <polyline points="326,534 450,486 512,512 574,538 698,490" stroke="#ffffff" stroke-width="14"/>
+  <!-- The rift: dark cut, glow, bright core — one straight line. -->
+  <g fill="none" stroke-linecap="round">
+    <line x1="300" y1="512" x2="724" y2="512" stroke="#020618" stroke-width="34" clip-path="url(#gem-clip)"/>
+    <line x1="322" y1="512" x2="702" y2="512" stroke="#ffffff" stroke-width="26" filter="url(#rift-glow)"/>
+    <line x1="322" y1="512" x2="702" y2="512" stroke="#ffffff" stroke-width="14"/>
   </g>
 </svg>
