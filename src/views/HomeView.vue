@@ -162,8 +162,8 @@ async function confirmDelete() {
       </button>
     </footer>
 
-    <div v-if="confirmingNew" class="fixed inset-0 z-10 flex items-center justify-center bg-black/80 p-6" role="dialog">
-      <div class="w-full max-w-sm rounded-lg border border-slate-500 bg-slate-900 p-4">
+    <div v-if="confirmingNew" class="fixed inset-0 z-10 flex overflow-y-auto bg-black/80 p-6" role="dialog">
+      <div class="m-auto w-full max-w-sm rounded-lg border border-slate-500 bg-slate-900 p-4">
         <p class="mb-4 text-lg">Discard the unfinished match and start a new one?</p>
         <div class="flex gap-2">
           <button type="button" class="min-h-11 flex-1 rounded-lg border border-slate-500" @click="resumeFromConfirm">
@@ -180,8 +180,8 @@ async function confirmDelete() {
       </div>
     </div>
 
-    <div v-if="deleting" class="fixed inset-0 z-10 flex items-center justify-center bg-black/80 p-6" role="dialog">
-      <div class="w-full max-w-sm rounded-lg border border-slate-500 bg-slate-900 p-4">
+    <div v-if="deleting" class="fixed inset-0 z-10 flex overflow-y-auto bg-black/80 p-6" role="dialog">
+      <div class="m-auto w-full max-w-sm rounded-lg border border-slate-500 bg-slate-900 p-4">
         <p class="mb-4 text-lg">
           Delete {{ deleting.players[0].name }} vs {{ deleting.players[1].name }}? This cannot be undone.
         </p>

@@ -4,8 +4,8 @@ const emit = defineEmits<{ home: []; undo: [] }>()
 </script>
 
 <template>
-  <div class="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/90 p-6" role="dialog" aria-modal="true">
-    <div class="w-full max-w-sm rounded-2xl border border-amber-400 bg-slate-900 p-6 text-center">
+  <div class="fixed inset-0 z-40 flex overflow-y-auto bg-slate-950/90 p-6" role="dialog" aria-modal="true">
+    <div class="m-auto w-full max-w-sm rounded-2xl border border-amber-400 bg-slate-900 p-6 text-center">
       <p class="text-sm uppercase tracking-wide text-slate-400">Winner</p>
       <h2 class="mt-1 text-3xl font-bold text-amber-300">{{ winnerName }}</h2>
       <p v-if="resignedName" class="mt-2 text-base text-slate-300">{{ resignedName }} resigned</p>

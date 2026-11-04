@@ -155,23 +155,25 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
 
     </div>
 
-    <!-- Score pop-up: panel sits in the opener's half, rotated for the top player; outside tap cancels -->
-    <div v-if="popup" class="fixed inset-0 z-30 flex flex-col bg-slate-950/70" @click.self="popup = null">
+    <!-- Score pop-up: panel sits in the opener's half (rotated for the top player), grows past it if
+         needed, and only scrolls once it is taller than the whole screen; outside tap cancels -->
+    <div v-if="popup" class="fixed inset-0 z-30 overflow-y-auto overscroll-contain bg-slate-950/70" @click.self="popup = null">
       <div
-        v-for="p in players"
-        :key="p"
-        class="flex min-h-0 flex-1 items-center justify-center p-4"
-        :class="p === 1 ? 'rotate-180' : ''"
+        class="flex min-h-full"
+        :class="popup.player === 1 ? 'flex-col-reverse' : 'flex-col'"
         @click.self="popup = null"
       >
-        <ScorePopup
-          v-if="popup.player === p"
-          :type="popup.type"
-          :current-turn="state.currentTurn"
-          :scored-in="(t) => scoredBattlefields(match?.actions ?? [], p, t)"
-          @confirm="confirmScore"
-          @cancel="popup = null"
-        />
+        <div class="flex-1" @click="popup = null" />
+        <div class="flex flex-1 p-4" @click.self="popup = null">
+          <ScorePopup
+            :class="popup.player === 1 ? 'rotate-180' : ''"
+            :type="popup.type"
+            :current-turn="state.currentTurn"
+            :scored-in="(t) => scoredBattlefields(match?.actions ?? [], popup!.player, t)"
+            @confirm="confirmScore"
+            @cancel="popup = null"
+          />
+        </div>
       </div>
     </div>
 

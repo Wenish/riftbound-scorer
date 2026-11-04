@@ -28,7 +28,7 @@ const seg = (active: boolean) =>
 </script>
 
 <template>
-  <div class="w-full max-w-sm rounded-2xl border border-slate-600 bg-slate-900 p-4 shadow-xl" role="dialog" aria-modal="true">
+  <div class="m-auto w-full max-w-sm rounded-2xl border border-slate-600 bg-slate-900 p-4 shadow-xl" role="dialog" aria-modal="true">
     <h2 class="mb-3 text-center text-lg font-semibold capitalize">{{ type }}</h2>
     <NumPad
       v-if="padOpen"
