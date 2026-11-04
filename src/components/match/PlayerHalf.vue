@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import type { PlayerIndex, ScoreEvent } from '../../game'
-import ScoreLog from './ScoreLog.vue'
+import type { PlayerIndex } from '../../game'
 
 defineProps<{
   name: string
   score: number
-  events: ScoreEvent[]
   active: boolean
   hint: string | null
   toast: string | null
@@ -28,9 +26,7 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:opacity-40'
       <span v-if="active" class="rounded bg-amber-400 px-2 py-0.5 text-xs font-bold text-slate-950">TURN</span>
     </div>
     <p v-if="hint" class="line-clamp-2 shrink-0 rounded-lg bg-amber-500/20 px-2 py-0.5 text-xs text-amber-200" role="status">{{ hint }}</p>
-    <div class="min-h-0 flex-1 overflow-hidden">
-      <ScoreLog :events="events" />
-    </div>
+    <div class="min-h-0 flex-1" />
     <p v-if="toast" class="line-clamp-2 shrink-0 rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-900" role="status">
       {{ toast }}
     </p>

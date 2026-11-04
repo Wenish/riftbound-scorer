@@ -85,7 +85,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
 <template>
   <section v-if="match && state" class="flex h-dvh overflow-hidden bg-slate-950">
     <!-- Shared score track: one upright column, outside the rotated top half -->
-    <ScoreTrack :scores="[state.scores[0], state.scores[1]]" />
+    <ScoreTrack :scores="[state.scores[0], state.scores[1]]" :events="[pointLog(match, 0), pointLog(match, 1)]" />
     <div class="flex min-w-0 flex-1 flex-col">
     <!-- Top half faces the opponent: rotated 180° -->
     <div class="min-h-0 flex-1 rotate-180 overflow-hidden">
@@ -93,7 +93,6 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
         :player="1"
         :name="match.players[1].name"
         :score="state.scores[1]"
-        :events="pointLog(match, 1)"
         :active="!state.isOver && state.activePlayer === 1"
         :hint="hintFor(1)"
         :toast="toast?.player === 1 ? toast.text : null"
@@ -132,7 +131,6 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
         :player="0"
         :name="match.players[0].name"
         :score="state.scores[0]"
-        :events="pointLog(match, 0)"
         :active="!state.isOver && state.activePlayer === 0"
         :hint="hintFor(0)"
         :toast="toast?.player === 0 ? toast.text : null"
