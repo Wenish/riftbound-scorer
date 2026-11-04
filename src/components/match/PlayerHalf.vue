@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import type { PlayerIndex } from '../../game'
 
 const props = defineProps<{
@@ -20,6 +20,22 @@ function confirmResign() {
   confirming.value = false
   emit('resign')
 }
+
+const notice = ref<{ text: string; kind: 'score' | 'pass' } | null>(null)
+const SCORE_MSG = 'You already scored both battlefields this turn.'
+const PASS_MSG = "It's not your turn."
+function tapScore(ev: 'conquer' | 'hold') {
+  if (props.scoreDisabled) notice.value = { text: SCORE_MSG, kind: 'score' }
+  else if (ev === 'conquer') emit('conquer')
+  else emit('hold')
+}
+function tapPass() {
+  if (props.passDisabled) notice.value = { text: PASS_MSG, kind: 'pass' }
+  else emit('pass')
+}
+watch(() => props.scoreDisabled, (v) => { if (!v && notice.value?.kind === 'score') notice.value = null })
+watch(() => props.passDisabled, (v) => { if (!v && notice.value?.kind === 'pass') notice.value = null })
+watch(() => props.disabled, (v) => { if (v) notice.value = null })
 
 const scoreBtn = (color: string) => [btn, props.scoreDisabled ? 'bg-slate-700 text-slate-500' : color]
 const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-500'
@@ -46,15 +62,20 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-
       </div>
     </div>
     <p v-if="hint" class="line-clamp-2 shrink-0 rounded-lg bg-amber-500/20 px-2 py-0.5 text-xs text-amber-200" role="status">{{ hint }}</p>
-    <div class="min-h-0 flex-1" />
+    <div class="min-h-0 flex-1">
+      <div v-if="notice" class="flex items-center gap-1 rounded-lg bg-slate-100 pl-2 text-xs font-medium text-slate-900" role="status">
+        <span class="min-w-0 flex-1">{{ notice.text }}</span>
+        <button type="button" class="flex size-11 shrink-0 items-center justify-center text-base" aria-label="Dismiss" @click="notice = null">&times;</button>
+      </div>
+    </div>
     <p v-if="toast" class="line-clamp-2 shrink-0 rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-900" role="status">
       {{ toast }}
     </p>
     <div class="grid shrink-0 grid-cols-3 gap-1.5">
-      <button type="button" :class="scoreBtn('bg-sky-500 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="emit('conquer')">Conquer</button>
-      <button type="button" :class="scoreBtn('bg-indigo-400 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="emit('hold')">Hold</button>
+      <button type="button" :class="scoreBtn('bg-sky-500 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="tapScore('conquer')">Conquer</button>
+      <button type="button" :class="scoreBtn('bg-indigo-400 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="tapScore('hold')">Hold</button>
       <button type="button" :class="[btn, 'bg-fuchsia-400 text-slate-950']" :disabled="disabled" @click="emit('special')">Special +1</button>
-      <button type="button" :class="[btn, 'col-span-2 bg-slate-600']" :disabled="disabled || passDisabled" @click="emit('pass')">Pass Turn</button>
+      <button type="button" :class="[btn, ['col-span-2', passDisabled ? 'bg-slate-700 text-slate-500' : 'bg-slate-600']]" :disabled="disabled" :aria-disabled="passDisabled || undefined" @click="tapPass">Pass Turn</button>
       <button type="button" :class="[btn, 'bg-slate-700']" @click="emit('undo')">Undo</button>
     </div>
     <div v-if="confirming" class="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90 p-3" role="dialog" aria-modal="true">
