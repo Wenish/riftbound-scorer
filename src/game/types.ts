@@ -26,7 +26,7 @@ export interface Match {
   pauses: Pause[]
 }
 
-export type MatchAction = ScoreEvent | PassTurn
+export type MatchAction = ScoreEvent | PassTurn | ResignAction
 
 export interface ScoreEvent {
   kind: 'score'
@@ -42,6 +42,14 @@ export interface ScoreEvent {
 export interface PassTurn {
   kind: 'pass'
   id: string
+  player: PlayerIndex
+  at: number
+}
+
+export interface ResignAction {
+  kind: 'resign'
+  id: string
+  /** Who resigned; the other player wins. */
   player: PlayerIndex
   at: number
 }
@@ -68,6 +76,8 @@ export interface MatchState {
   turns: Turn[]
   winner: PlayerIndex | null
   isOver: boolean
+  /** True when the match ended by a resignation. */
+  resigned: boolean
   isPaused: boolean
   /** Total game time in ms, excluding paused time. */
   gameDuration: number

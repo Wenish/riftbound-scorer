@@ -7,6 +7,7 @@ import type {
   PassTurn,
   Pause,
   PlayerIndex,
+  ResignAction,
   ScoreEvent,
   ScoreType,
   Turn,
@@ -122,6 +123,7 @@ export function deriveState(match: Match, now: number): MatchState {
     turns,
     winner: match.winner ?? null,
     isOver,
+    resigned: match.actions.some((a) => a.kind === 'resign'),
     isPaused: !isOver && last !== undefined && last.to === undefined,
     gameDuration: activeTime(match.pauses, match.createdAt, end),
     finalPointHint,
@@ -187,12 +189,25 @@ export function passTurn(match: Match, args: { now: number; id: string }): Match
   return { ...match, actions: [...match.actions, action] }
 }
 
-/** Removes the last action. Reopens the match if the winning point is undone. */
+/** Ends the match: `player` resigns and the other player wins. */
+export function resign(match: Match, args: { player: PlayerIndex; now: number; id: string }): Match {
+  if (match.winner !== undefined) throw new GameError('Match is over')
+  const action: ResignAction = { kind: 'resign', id: args.id, player: args.player, at: args.now }
+  return {
+    ...match,
+    actions: [...match.actions, action],
+    winner: other(args.player),
+    endedAt: args.now,
+    pauses: closePauses(match.pauses, args.now),
+  }
+}
+
+/** Removes the last action. Reopens the match if the winning point or a resignation is undone. */
 export function undo(match: Match): { match: Match; undone: MatchAction | null } {
   if (match.actions.length === 0) return { match, undone: null }
   const undone = match.actions[match.actions.length - 1]
   const next: Match = { ...match, actions: match.actions.slice(0, -1) }
-  if (match.winner !== undefined && undone.kind === 'score' && undone.pointAwarded) {
+  if (match.winner !== undefined && (undone.kind === 'resign' || (undone.kind === 'score' && undone.pointAwarded))) {
     delete next.winner
     delete next.endedAt
   }

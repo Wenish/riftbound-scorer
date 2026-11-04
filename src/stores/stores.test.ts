@@ -44,6 +44,26 @@ describe('matches store', () => {
     expect((await storage.getMatch(id))?.actions).toHaveLength(2)
   })
 
+  it('persists resign and undo of it', async () => {
+    const m = useMatchesStore()
+    await m.load()
+    const { id } = await m.startMatch(['Me', 'Opp'], 0)
+    await m.special(0)
+    await m.resign(0)
+    const saved = await storage.getMatch(id)
+    expect(saved?.winner).toBe(1)
+    expect(saved?.endedAt).toBeDefined()
+    expect(saved?.actions.at(-1)?.kind).toBe('resign')
+    expect(m.activeState?.resigned).toBe(true)
+    await expect(m.resign(1)).rejects.toThrow()
+    expect((await storage.getMatch(id))?.actions).toHaveLength(2)
+    expect((await m.undo())?.kind).toBe('resign')
+    const reopened = await storage.getMatch(id)
+    expect(reopened?.winner).toBeUndefined()
+    expect(reopened?.endedAt).toBeUndefined()
+    expect(m.activeState?.isOver).toBe(false)
+  })
+
   it('resumes an unfinished match on load and keeps finished ones in history', async () => {
     const first = useMatchesStore()
     await first.load()

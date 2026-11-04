@@ -12,6 +12,7 @@ export function scoreCode(event: ScoreEvent): string {
 /** Human description for the undo toast, e.g. "Conquer (Opponent) T7 — Frenemy". */
 export function describeAction(match: Match, action: MatchAction): string {
   const name = match.players[action.player].name
+  if (action.kind === 'resign') return `Resign — ${name}`
   if (action.kind === 'pass') return `Pass turn — ${name}`
   let label: string = TYPE_LABEL[action.type]
   if (action.type !== 'special') {

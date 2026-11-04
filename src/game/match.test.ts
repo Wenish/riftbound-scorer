@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  GameError, addScore, createMatch, deriveState, passTurn, pauseMatch, pointLog, resumeMatch, undo,
+  GameError, addScore, createMatch, deriveState, passTurn, pauseMatch, pointLog, resign, resumeMatch, undo,
 } from './match'
 import { describeAction, scoreCode } from './codes'
 import { formatDuration } from './format'
@@ -242,6 +242,53 @@ describe('pauses and durations', () => {
     m = score(m, 0, 'special', undefined, { now: 3000 })
     expect(deriveState(m, 10000).gameDuration).toBe(1000)
     expect(deriveState(m, 10000).isPaused).toBe(false)
+  })
+})
+
+describe('resign', () => {
+  const res = (m: Match, player: PlayerIndex, now = 2000) => resign(m, { player, now, id: id() })
+
+  it('gives the win to the opponent and keeps scores', () => {
+    let m = score(mk(), 0, 'special')
+    const a = res(m, 0)
+    expect(deriveState(a, 5000)).toMatchObject({ winner: 1, isOver: true, resigned: true, scores: [1, 0] })
+    const b = res(m, 1)
+    expect(deriveState(b, 5000)).toMatchObject({ winner: 0, isOver: true, resigned: true, scores: [1, 0] })
+    expect(deriveState(m, 5000).resigned).toBe(false)
+  })
+
+  it('is rejected once the match is over', () => {
+    const m = res(mk(), 0)
+    expect(() => res(m, 1)).toThrow(GameError)
+    expect(() => score(m, 0, 'special')).toThrow(GameError)
+  })
+
+  it('stops timers and closes an open pause', () => {
+    let m = pass(mk(), 1000)
+    m = pauseMatch(m, 1500)
+    m = res(m, 1, 3000)
+    const s = deriveState(m, 99999)
+    expect(m.endedAt).toBe(3000)
+    expect(s.gameDuration).toBe(1500)
+    expect(s.turns[1].duration).toBe(500)
+    expect(s.isPaused).toBe(false)
+  })
+
+  it('is undone by undo, reopening the match', () => {
+    const before = pauseMatch(pass(score(mk(), 0, 'special')), 1500)
+    const m = res(before, 0, 3000)
+    const r = undo(m)
+    expect(r.undone?.kind).toBe('resign')
+    expect(r.match.winner).toBeUndefined()
+    expect(r.match.endedAt).toBeUndefined()
+    expect(deriveState(r.match, 4000).isOver).toBe(false)
+    expect(deriveState(r.match, 4000).resigned).toBe(false)
+    expect(r.match.actions).toEqual(before.actions)
+  })
+
+  it('describes resign for the undo toast', () => {
+    const m = res(mk(), 1)
+    expect(describeAction(m, m.actions[0])).toBe('Resign — Frenemy')
   })
 })
 

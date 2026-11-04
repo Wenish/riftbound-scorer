@@ -88,7 +88,7 @@ First launch ─► Home (Match History) ─► Start New Match ─► Match Sco
 ### 3.2 Home screen — Match History
 
 - Header "Match History" with a **+** button → Start New Match.
-- List of past matches, newest first, formatted `Player1 (8) vs (6) Player2`.
+- List of past matches, newest first, formatted `Player1 (8) vs (6) Player2`. A match ended by resignation is marked as resigned (e.g. a "Resigned" tag naming who resigned).
 - If a match is unfinished, it is shown at the top with a "Resume" affordance.
 - *Should-have:* tap a past match to see its details (score log, total time, per-turn times).
 - *Should-have:* delete a match from history.
@@ -118,6 +118,7 @@ Each half contains:
   - **Hold** → opens the Score Pop-up (type = hold).
   - **Special Score** → gives +1 point directly (cards/effects that grant a point), on the current turn.
   - **Pass Turn** → ends the current turn; the turn counter goes up by 1 and the other player becomes active.
+  - **Resign** → the player gives up; the other player wins (see 4.1). Needs a confirmation step so it can't be triggered by an accidental tap. Hidden/disabled once the match is over.
   - **Undo** → reverts the most recent action in the match, whichever player did it (see 4.4).
     Both halves have their own Undo button; they behave identically.
 - **Final point hint** (only when it applies, see 4.3) — shown on that player's half, facing them.
@@ -168,6 +169,7 @@ A denied entry is shown in the log in a distinct (muted/struck) style with a sho
 - Reaching 8 ends the match: timers stop, a result screen/overlay shows the winner, match is saved to history.
   Gaining the winning point (7 → 8) by **Conquer** is restricted by the final point rule (4.3);
   Hold and Special Score always give it.
+- A player can also **resign** at any time while the match is running: the other player wins immediately, scores stay as they are, timers stop (an open pause is closed, the open turn ends), and the match is saved as resigned. Resigning after the match is over is not possible.
 - Score can never go below 0 or above 8.
 
 ### 4.2 Turns
@@ -207,13 +209,13 @@ The app enforces this as a helper:
 ### 4.4 Undo
 
 - The match keeps a single ordered history of actions: score events (including denied conquers and
-  special scores) and pass-turn.
+  special scores), pass-turn and resign.
 - Both halves have an **Undo** button. Either one reverts the **most recent action in the match, no
   matter which player did it**. Repeated presses keep stepping back through the history.
 - Undoing a Pass Turn restores the previous turn number, the active player, and that turn's timer,
   so the turn is open again.
 - Undoing a denied conquer removes it and its final point hint.
-- Undoing the winning point reopens the match.
+- Undoing the winning point reopens the match. Undoing a resignation likewise reopens it (no winner, timers running again).
 - *Should-have:* a short toast on the half that pressed Undo says what was undone,
   e.g. "Undid: Conquer (Opponent) T7 — Frenemy".
 
@@ -249,7 +251,7 @@ interface Match {
   pauses: { from: number; to?: number }[]; // timer pauses (open while `to` is unset); paused time is excluded from game/turn durations
 }
 
-type MatchAction = ScoreEvent | PassTurn;
+type MatchAction = ScoreEvent | PassTurn | ResignAction;
 
 interface ScoreEvent {
   kind: 'score';
@@ -269,6 +271,13 @@ interface PassTurn {
   at: number;                          // epoch ms; end of that turn, start of the next
 }
 
+interface ResignAction {
+  kind: 'resign';
+  id: string;
+  player: PlayerIndex;                 // player who resigned; the other player wins (`winner`, `endedAt = at`)
+  at: number;                          // epoch ms
+}
+
 // Derived from `createdAt`, `firstPlayer` and the PassTurn actions — not stored separately.
 interface Turn {
   number: number;
@@ -279,7 +288,7 @@ interface Turn {
 ```
 
 Everything else is derived from `actions`: scores (count of `ScoreEvent`s with `pointAwarded`), the
-current turn number and active player, per-turn durations, the final point hint, and the log codes.
+current turn number and active player, whether the match was resigned (a `ResignAction` exists), per-turn durations, the final point hint, and the log codes.
 Undo removes the last action and re-derives; nothing else needs restoring.
 
 ## 6. Non-functional requirements

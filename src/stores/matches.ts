@@ -5,6 +5,7 @@ import {
   createMatch,
   deriveState,
   passTurn as passTurnLogic,
+  resign as resignLogic,
   pauseMatch,
   resumeMatch,
   undo as undoLogic,
@@ -84,6 +85,8 @@ export const useMatchesStore = defineStore('matches', () => {
 
   const passTurn = () => mutate((m) => passTurnLogic(m, { now: Date.now(), id: newId() }))
 
+  const resign = (player: PlayerIndex) => mutate((m) => resignLogic(m, { player, now: Date.now(), id: newId() }))
+
   /** Undoes the last action; resolves to it (or null if nothing to undo). */
   async function undo(): Promise<MatchAction | null> {
     if (!active.value) return null
@@ -116,6 +119,7 @@ export const useMatchesStore = defineStore('matches', () => {
     score,
     special,
     passTurn,
+    resign,
     undo,
     pause,
     resumeTimer,
