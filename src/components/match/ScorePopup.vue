@@ -1,0 +1,50 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import type { Battlefield, ScoreType } from '../../game'
+import NumPad from './NumPad.vue'
+
+const props = defineProps<{ type: Exclude<ScoreType, 'special'>; currentTurn: number }>()
+const emit = defineEmits<{ confirm: [battlefield: Battlefield, turn: number]; cancel: [] }>()
+
+const battlefield = ref<Battlefield>('mine')
+const turn = ref(props.currentTurn)
+const padOpen = ref(false)
+
+const seg = (active: boolean) =>
+  `min-h-12 flex-1 rounded-lg text-base font-semibold ${active ? 'bg-amber-400 text-slate-950' : 'bg-slate-700 text-slate-100'}`
+</script>
+
+<template>
+  <div class="w-full max-w-sm rounded-2xl border border-slate-600 bg-slate-900 p-4 shadow-xl" role="dialog" aria-modal="true">
+    <h2 class="mb-3 text-center text-lg font-semibold capitalize">{{ type }}</h2>
+    <NumPad
+      v-if="padOpen"
+      :max="currentTurn"
+      :initial="turn"
+      @confirm="(v) => ((turn = v), (padOpen = false))"
+      @cancel="padOpen = false"
+    />
+    <div v-else class="flex flex-col gap-3">
+      <div class="flex gap-2" role="group" aria-label="Battlefield">
+        <button type="button" :class="seg(battlefield === 'mine')" @click="battlefield = 'mine'">My</button>
+        <button type="button" :class="seg(battlefield === 'opponent')" @click="battlefield = 'opponent'">Opponent</button>
+      </div>
+      <button
+        type="button"
+        class="flex min-h-12 items-center justify-between rounded-lg bg-slate-800 px-4 text-base"
+        @click="padOpen = true"
+      >
+        <span class="text-slate-400">Turn</span>
+        <span class="text-xl font-semibold" :class="turn !== currentTurn ? 'text-amber-300' : ''">{{ turn }}</span>
+      </button>
+      <button
+        type="button"
+        class="min-h-12 rounded-lg bg-emerald-500 text-base font-bold text-slate-950"
+        @click="emit('confirm', battlefield, turn)"
+      >
+        Score Point +1
+      </button>
+      <button type="button" class="min-h-11 rounded-lg text-slate-300" @click="emit('cancel')">Cancel</button>
+    </div>
+  </div>
+</template>

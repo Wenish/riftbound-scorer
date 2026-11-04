@@ -79,3 +79,12 @@ export async function requestPersistentStorage(): Promise<void> {
     // Unsupported or denied; nothing else to do.
   }
 }
+
+/** True in a plain browser tab (not Tauri, not an installed/standalone PWA): show an install hint. */
+export function shouldHintInstall(): boolean {
+  if (isTauri() || typeof window === 'undefined') return false
+  const standalone =
+    (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true
+  return !standalone
+}
