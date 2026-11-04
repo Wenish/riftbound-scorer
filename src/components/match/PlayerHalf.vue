@@ -31,7 +31,7 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:opacity-40'
     <div class="flex shrink-0 items-center justify-between gap-2">
       <h2 class="flex min-w-0 items-center gap-1.5 truncate text-base font-bold"><span class="size-2.5 shrink-0 rounded-full" :class="player === 1 ? 'bg-rose-400' : 'bg-sky-400'" aria-hidden="true" />{{ name }}</h2>
       <div class="flex shrink-0 items-center gap-1.5">
-        <span v-if="active" class="rounded bg-amber-400 px-2 py-0.5 text-xs font-bold text-slate-950">TURN</span>
+        <span v-if="active" class="rounded bg-amber-400 whitespace-nowrap px-2 py-0.5 text-xs font-bold text-slate-950">YOUR TURN</span>
         <button
           type="button"
           class="min-h-11 rounded-lg px-3 text-xs font-medium text-slate-400 underline-offset-2 hover:underline disabled:opacity-40"
