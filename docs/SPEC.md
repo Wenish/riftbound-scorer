@@ -110,7 +110,7 @@ The screen is split horizontally into two halves:
 
 Each half contains:
 
-- **Score track** 0 → 8 along the side. The player's current score is **highlighted**. Players start at 0.
+- **Score track** (shared, one upright column along the left edge, not mirrored): each player's 0 is at their own outer end and the single **8** sits at the centre divider. The bottom player's score climbs from the bottom, the top player's descends from the top; each current score is **highlighted** in the player's colour (bottom blue, top rose, matching the dot by their name). Players start at 0.
 - **Score log** next to the track: each scored point shows its code (see 3.6), e.g. `CMT2`, `HOT4`.
 - **Player name.**
 - Action buttons:

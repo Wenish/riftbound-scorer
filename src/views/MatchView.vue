@@ -8,6 +8,7 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import PlayerHalf from '../components/match/PlayerHalf.vue'
 import ResultOverlay from '../components/match/ResultOverlay.vue'
+import ScoreTrack from '../components/match/ScoreTrack.vue'
 import ScorePopup from '../components/match/ScorePopup.vue'
 import {
   deriveState,
@@ -82,9 +83,12 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
 </script>
 
 <template>
-  <section v-if="match && state" class="flex h-dvh flex-col overflow-hidden bg-slate-950">
+  <section v-if="match && state" class="flex h-dvh overflow-hidden bg-slate-950">
+    <!-- Shared score track: one upright column, outside the rotated top half -->
+    <ScoreTrack :scores="[state.scores[0], state.scores[1]]" />
+    <div class="flex min-w-0 flex-1 flex-col">
     <!-- Top half faces the opponent: rotated 180° -->
-    <div class="min-h-0 flex-1 rotate-180">
+    <div class="min-h-0 flex-1 rotate-180 overflow-hidden">
       <PlayerHalf
         :player="1"
         :name="match.players[1].name"
@@ -103,7 +107,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
     </div>
 
     <!-- Centre divider: timers duplicated so both players can read them -->
-    <div class="flex items-center justify-between gap-2 border-y border-slate-600 bg-slate-950 px-3 py-1">
+    <div class="flex h-14 shrink-0 items-center justify-between gap-2 border-y border-slate-600 bg-slate-950 px-3">
       <div v-for="rot in [true, false]" :key="String(rot)" class="text-center leading-tight" :class="rot ? 'rotate-180' : ''">
         <div class="text-xs text-slate-400">Turn {{ state.currentTurn }} · {{ formatDuration(turnDuration) }}</div>
         <div class="text-lg font-bold tabular-nums">{{ formatDuration(state.gameDuration) }}</div>
@@ -123,7 +127,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
       </div>
     </div>
 
-    <div class="min-h-0 flex-1">
+    <div class="min-h-0 flex-1 overflow-hidden">
       <PlayerHalf
         :player="0"
         :name="match.players[0].name"
@@ -139,6 +143,8 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
         @pass="guarded(() => matches.passTurn())"
         @undo="undo(0)"
       />
+    </div>
+
     </div>
 
     <!-- Score pop-up: panel sits in the opener's half, rotated for the top player; outside tap cancels -->
