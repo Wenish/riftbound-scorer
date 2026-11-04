@@ -91,6 +91,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
     <div class="min-h-0 flex-1 rotate-180 overflow-hidden">
       <PlayerHalf
         :player="1"
+        :opponent-name="match.players[0].name"
         :name="match.players[1].name"
         :score="state.scores[1]"
         :active="!state.isOver && state.activePlayer === 1"
@@ -102,6 +103,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
         @special="guarded(() => matches.special(1))"
         @pass="guarded(() => matches.passTurn())"
         @undo="undo(1)"
+        @resign="guarded(() => matches.resign(1))"
       />
     </div>
 
@@ -129,6 +131,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
     <div class="min-h-0 flex-1 overflow-hidden">
       <PlayerHalf
         :player="0"
+        :opponent-name="match.players[1].name"
         :name="match.players[0].name"
         :score="state.scores[0]"
         :active="!state.isOver && state.activePlayer === 0"
@@ -140,6 +143,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
         @special="guarded(() => matches.special(0))"
         @pass="guarded(() => matches.passTurn())"
         @undo="undo(0)"
+        @resign="guarded(() => matches.resign(0))"
       />
     </div>
 
@@ -169,6 +173,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
       :winner-name="match.players[state.winner].name"
       :names="[match.players[0].name, match.players[1].name]"
       :scores="state.scores"
+      :resigned-name="state.resigned ? match.players[1 - state.winner as PlayerIndex].name : null"
       @home="leave"
       @undo="undo(state.winner)"
     />

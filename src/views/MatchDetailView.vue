@@ -29,7 +29,9 @@ const state = computed(() => (match.value ? deriveState(match.value, match.value
         <p class="text-xl font-bold">
           {{ match.players[0].name }} ({{ state.scores[0] }}) vs ({{ state.scores[1] }}) {{ match.players[1].name }}
         </p>
-        <p v-if="state.winner !== null" class="mt-1 text-emerald-400">Winner: {{ match.players[state.winner].name }}</p>
+        <p v-if="state.winner !== null" class="mt-1 text-emerald-400">
+          Winner: {{ match.players[state.winner].name }}<span v-if="state.resigned" class="text-amber-400"> · {{ match.players[1 - state.winner as 0 | 1].name }} resigned</span>
+        </p>
         <p v-else class="mt-1 text-amber-400">Unfinished</p>
         <p class="mt-1 text-slate-300">Total time {{ formatDuration(state.gameDuration) }}</p>
       </div>

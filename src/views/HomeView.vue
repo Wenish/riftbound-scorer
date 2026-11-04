@@ -46,6 +46,10 @@ function scores(m: Match): [number, number] {
   return deriveState(m, m.endedAt ?? m.createdAt).scores
 }
 
+function resigned(m: Match): boolean {
+  return m.actions.some((a) => a.kind === 'resign')
+}
+
 function resume(m: Match) {
   matches.resume(m.id)
   nav.navigate('match')
@@ -116,7 +120,7 @@ async function confirmDelete() {
           class="min-h-12 min-w-0 flex-1 truncate px-3 py-2 text-left text-lg"
           @click="nav.navigate('detail', { matchId: m.id })"
         >
-          {{ m.players[0].name }} ({{ scores(m)[0] }}) vs ({{ scores(m)[1] }}) {{ m.players[1].name }}
+          {{ m.players[0].name }} ({{ scores(m)[0] }}) vs ({{ scores(m)[1] }}) {{ m.players[1].name }}<span v-if="resigned(m)" class="text-sm text-amber-400"> · resigned</span>
         </button>
         <button
           type="button"
