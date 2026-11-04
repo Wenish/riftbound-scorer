@@ -10,7 +10,7 @@
     "typecheck": "vue-tsc -b",
     "test": "vitest run --passWithNoTests",
     "tauri": "tauri",
-    "generate-pwa-assets": "node -e \"fs.copyFileSync('src-tauri/icons/icon.png','public/pwa-source.png')\" && pwa-assets-generator && node -e \"fs.rmSync('public/pwa-source.png')\""
+    "generate-pwa-assets": "node -e \"fs.copyFileSync('src-tauri/app-icon.png','public/pwa-source.png')\" && pwa-assets-generator && node -e \"fs.rmSync('public/pwa-source.png')\""
   },
   "dependencies": {
     "@tauri-apps/api": "^2.12.4",

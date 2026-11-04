@@ -55,5 +55,18 @@ npm run tauri android dev
 ```sh
 npm test            # Vitest
 npm run typecheck   # vue-tsc
-npm run generate-pwa-assets   # regenerate the PWA icons in public/ from src-tauri/icons/icon.png
+npm run generate-pwa-assets   # regenerate the PWA icons in public/ from src-tauri/app-icon.png
 ```
+
+## App icon
+
+The master icon is `src-tauri/app-icon.svg`. After editing it, re-render the PNG and regenerate every
+platform icon from it (Tauri icon set in `src-tauri/icons/`, PWA icons and favicon in `public/`), then commit the results:
+
+```sh
+node -e "require('sharp')('src-tauri/app-icon.svg',{density:72}).resize(1024,1024).png().toFile('src-tauri/app-icon.png')"
+npm run tauri icon src-tauri/app-icon.png
+npm run generate-pwa-assets
+```
+
+`tauri icon` resets `src-tauri/icons/android/values/ic_launcher_background.xml` to `#FFFFFF`; set it back to `#020618` afterwards.
