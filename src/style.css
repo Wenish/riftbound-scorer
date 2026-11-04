@@ -5,6 +5,22 @@ body {
   background-color: #020617; /* slate-950: no light bars behind the notch / overscroll */
 }
 
+/* Native-app feel: no text selection, long-press callout or tap highlight.
+   Form fields stay selectable/editable. */
+html,
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* Safe-area insets (notch, status bar, home indicator). env() is 0 in a normal browser tab.
    Applied once on the app root; views size themselves with the *-safe-dvh utilities below. */
 :root {
