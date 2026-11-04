@@ -36,7 +36,9 @@ Production build served locally (http://localhost:4173):
 npm run build && npm run preview
 ```
 
-> PWA features (manifest, service worker / offline install) are not set up yet; the browser commands currently serve the plain web build.
+> PWA features (web app manifest, offline service worker, install prompt) are only active in the production
+> build: test them with `npm run build && npm run preview`. `npm run dev` runs without a service worker, and
+> Tauri builds (`npm run tauri dev` / `npm run tauri build`) ship no service worker or manifest.
 
 Mobile (first time only, generate the native projects: `npx tauri ios init` / `npx tauri android init`):
 
@@ -53,4 +55,5 @@ npm run tauri android dev
 ```sh
 npm test            # Vitest
 npm run typecheck   # vue-tsc
+npm run generate-pwa-assets   # regenerate the PWA icons in public/ from src-tauri/icons/icon.png
 ```
