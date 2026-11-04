@@ -119,7 +119,7 @@ Each half contains:
   - **Special Score** → gives +1 point directly (cards/effects that grant a point), on the current turn.
   - **Pass Turn** → ends the current turn; the turn counter goes up by 1 and the other player becomes active.
   - **Resign** → the player gives up; the other player wins (see 4.1). Needs a confirmation step so it can't be triggered by an accidental tap. Hidden/disabled once the match is over.
-  - **Disabled states** → Conquer/Hold are greyed out once that player scored both battlefields this turn; Pass Turn is greyed out for the non-active player. Tapping a greyed button does not start the flow; it shows a small dismissable notice in that player's half explaining why ("You already scored both battlefields this turn." / "It's not your turn."), which clears when the condition ends. Everything is natively disabled once the match is over.
+  - **Disabled states** → Conquer/Hold are greyed out once that player scored both battlefields this turn; Hold is also greyed out for the non-active player (holding only happens on your own turn); Pass Turn is greyed out for the non-active player. Tapping a greyed button does not start the flow; it shows a small dismissable notice in that player's half explaining why ("You already scored both battlefields this turn." / "You can only hold on your turn." / "It's not your turn."), which clears when the condition ends. Everything is natively disabled once the match is over.
   - **Undo** → reverts the most recent action in the match, whichever player did it (see 4.4).
     Both halves have their own Undo button; they behave identically.
 - **Final point hint** (only when it applies, see 4.3) — shown on that player's half, facing them.
