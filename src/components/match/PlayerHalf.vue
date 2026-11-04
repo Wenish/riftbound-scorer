@@ -26,12 +26,14 @@ const SCORE_MSG = 'You already scored both battlefields this turn.'
 const PASS_MSG = "It's not your turn."
 const HOLD_MSG = 'You can only hold on your turn.'
 function tapScore(ev: 'conquer' | 'hold') {
+  notice.value = null
   if (ev === 'hold' && !props.active) notice.value = { text: HOLD_MSG, kind: 'hold' }
   else if (props.scoreDisabled) notice.value = { text: SCORE_MSG, kind: 'score' }
   else if (ev === 'conquer') emit('conquer')
   else emit('hold')
 }
 function tapPass() {
+  notice.value = null
   if (props.passDisabled) notice.value = { text: PASS_MSG, kind: 'pass' }
   else emit('pass')
 }
@@ -58,7 +60,7 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-
           type="button"
           class="min-h-11 rounded-lg px-3 text-xs font-medium text-slate-400 underline-offset-2 hover:underline disabled:opacity-40"
           :disabled="disabled"
-          @click="confirming = true"
+          @click="notice = null; confirming = true"
         >
           Resign
         </button>
@@ -77,12 +79,12 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-
     <div class="grid shrink-0 grid-cols-3 gap-1.5">
       <button type="button" :class="scoreBtn('bg-sky-500 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="tapScore('conquer')">Conquer</button>
       <button type="button" :class="scoreBtn('bg-indigo-400 text-slate-950', scoreDisabled || !active)" :disabled="disabled" :aria-disabled="scoreDisabled || !active || undefined" @click="tapScore('hold')">Hold</button>
-      <button type="button" :class="[btn, 'bg-fuchsia-400 text-slate-950']" :disabled="disabled" @click="emit('special')">Special +1</button>
+      <button type="button" :class="[btn, 'bg-fuchsia-400 text-slate-950']" :disabled="disabled" @click="notice = null; emit('special')">Special +1</button>
       <button type="button" :class="[btn, ['col-span-2', passDisabled ? 'bg-slate-700 text-slate-500' : 'bg-slate-600']]" :disabled="disabled" :aria-disabled="passDisabled || undefined" @click="tapPass">Pass Turn</button>
-      <button type="button" :class="[btn, 'bg-slate-700']" @click="emit('undo')">Undo</button>
+      <button type="button" :class="[btn, 'bg-slate-700']" @click="notice = null; emit('undo')">Undo</button>
     </div>
-    <div v-if="confirming" class="absolute inset-0 z-10 flex items-center justify-center bg-slate-950/90 p-3" role="dialog" aria-modal="true">
-      <div class="w-full max-w-xs rounded-xl border border-slate-500 bg-slate-900 p-3 text-center">
+    <div v-if="confirming" class="absolute inset-0 z-10 flex overflow-y-auto bg-slate-950/90 p-3" role="dialog" aria-modal="true">
+      <div class="m-auto w-full max-w-xs rounded-xl border border-slate-500 bg-slate-900 p-3 text-center">
         <p class="mb-3 text-base font-semibold">Resign? {{ opponentName }} wins</p>
         <div class="flex gap-2">
           <button type="button" class="min-h-11 flex-1 rounded-lg border border-slate-500" @click="confirming = false">Cancel</button>
