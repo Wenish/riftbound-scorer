@@ -1,14 +1,20 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { Battlefield, ScoreType } from '../../game'
 import NumPad from './NumPad.vue'
 
-const props = defineProps<{ type: Exclude<ScoreType, 'special'>; currentTurn: number }>()
+const props = defineProps<{
+  type: Exclude<ScoreType, 'special'>
+  currentTurn: number
+  /** Battlefields the popup's player already scored in the given turn. */
+  scoredIn: (turn: number) => Battlefield[]
+}>()
 const emit = defineEmits<{ confirm: [battlefield: Battlefield, turn: number]; cancel: [] }>()
 
 const battlefield = ref<Battlefield>('mine')
 const turn = ref(props.currentTurn)
 const padOpen = ref(false)
+const alreadyScored = computed(() => props.scoredIn(turn.value).includes(battlefield.value))
 
 const seg = (active: boolean) =>
   `min-h-12 flex-1 rounded-lg text-base font-semibold ${active ? 'bg-amber-400 text-slate-950' : 'bg-slate-700 text-slate-100'}`
@@ -37,9 +43,18 @@ const seg = (active: boolean) =>
         <span class="text-slate-400">Turn</span>
         <span class="text-xl font-semibold" :class="turn !== currentTurn ? 'text-amber-300' : ''">{{ turn }}</span>
       </button>
+      <p
+        v-if="alreadyScored"
+        class="rounded-lg bg-amber-500/20 px-3 py-2 text-sm text-amber-200"
+        role="status"
+      >
+        You already scored {{ battlefield === 'mine' ? 'your' : "the opponent's" }} battlefield this turn. Each
+        battlefield can only be scored once per turn.
+      </p>
       <button
         type="button"
-        class="min-h-12 rounded-lg bg-emerald-500 text-base font-bold text-slate-950"
+        class="min-h-12 rounded-lg bg-emerald-500 text-base font-bold text-slate-950 disabled:opacity-40"
+        :disabled="alreadyScored"
         @click="emit('confirm', battlefield, turn)"
       >
         Score Point +1

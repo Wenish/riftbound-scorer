@@ -20,6 +20,36 @@ function to7(m: Match, p: PlayerIndex): Match {
   return m
 }
 
+describe('one score per battlefield per turn', () => {
+  it('rejects a second conquer/hold on the same battlefield in a turn', () => {
+    const m = score(mk(), 0, 'conquer', 'mine')
+    expect(() => score(m, 0, 'hold', 'mine')).toThrow(GameError)
+    expect(() => score(m, 0, 'conquer', 'mine')).toThrow(GameError)
+  })
+
+  it('allows the other battlefield, other turns, specials and the other player', () => {
+    let m = score(mk(), 0, 'hold', 'mine')
+    m = score(m, 0, 'hold', 'opponent')
+    m = score(m, 0, 'special')
+    m = score(m, 0, 'special')
+    m = score(m, 1, 'hold', 'mine')
+    m = pass(m)
+    m = score(m, 0, 'hold', 'mine')
+    expect(deriveState(m, 5000).scores).toEqual([5, 1])
+    // backfilling an earlier turn is checked per turn
+    expect(() => score(m, 0, 'hold', 'mine', { turn: 1 })).toThrow(GameError)
+    expect(score(m, 1, 'hold', 'opponent', { turn: 1 }).actions).toHaveLength(m.actions.length + 1)
+  })
+
+  it('a denied conquer still blocks a repeat', () => {
+    let m = to7(mk(), 0)
+    m = score(m, 0, 'conquer', 'mine')
+    expect(deriveState(m, 5000).scores[0]).toBe(7)
+    expect(() => score(m, 0, 'conquer', 'mine')).toThrow(GameError)
+    expect(() => score(m, 0, 'hold', 'mine')).toThrow(GameError)
+  })
+})
+
 describe('scoring', () => {
   it('adds points and tracks scores', () => {
     let m = score(mk(), 0, 'conquer', 'mine')

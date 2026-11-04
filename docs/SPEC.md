@@ -141,6 +141,9 @@ Also on the screen:
   A corrected value must be between 1 and the current turn (inclusive).
 - **Score Point +1** confirms and adds the point (subject to the final point rule, see 4.3).
   Tapping outside / cancel closes without scoring.
+- **Already scored:** if this player already scored the selected battlefield in the selected turn
+  (see 4.6), an amber message explains that each battlefield can only be scored once per turn and
+  **Score Point +1** is disabled. It updates when the battlefield or turn is changed.
 
 Special Score has no pop-up; it always uses the current turn.
 
@@ -205,6 +208,12 @@ The app enforces this as a helper:
 - **Pass Turn** clears the hint. The denied entry stays in the log.
 - **Undo** of a denied conquer removes the entry and its hint (see 4.4). Undoing a Pass Turn restores
   the hint if it was showing at the end of that turn, since the turn is open again.
+
+### 4.6 One score per battlefield per turn
+
+Each battlefield can be scored only **once per player per turn**, by Conquer or Hold. This includes a
+conquer denied by the final point rule. The game logic rejects a repeat; Special Score is unaffected.
+Undo frees the battlefield again.
 
 ### 4.4 Undo
 

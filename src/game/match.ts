@@ -53,7 +53,8 @@ function currentTurnOf(actions: MatchAction[]): number {
   return n
 }
 
-function scoredBattlefields(actions: MatchAction[], player: PlayerIndex, turn: number): Battlefield[] {
+/** Battlefields `player` already scored (conquer/hold, incl. denied conquers) in `turn`. */
+export function scoredBattlefields(actions: MatchAction[], player: PlayerIndex, turn: number): Battlefield[] {
   const out: Battlefield[] = []
   for (const a of actions) {
     if (a.kind !== 'score' || a.player !== player || a.turn !== turn) continue
@@ -155,6 +156,9 @@ export function addScore(
   }
   if (args.type !== 'special' && !args.battlefield) throw new GameError('Battlefield required')
   const battlefield = args.type === 'special' ? undefined : args.battlefield
+  if (battlefield && scoredBattlefields(match.actions, args.player, turn).includes(battlefield)) {
+    throw new GameError('Battlefield already scored this turn')
+  }
 
   const scores = scoresOf(match.actions)
   let pointAwarded = true

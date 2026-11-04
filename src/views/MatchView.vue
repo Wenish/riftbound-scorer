@@ -15,6 +15,7 @@ import {
   describeAction,
   formatDuration,
   pointLog,
+  scoredBattlefields,
   type Battlefield,
   type PlayerIndex,
   type ScoreType,
@@ -162,6 +163,7 @@ const players: PlayerIndex[] = [1, 0] // render order: top (rotated) first
           v-if="popup.player === p"
           :type="popup.type"
           :current-turn="state.currentTurn"
+          :scored-in="(t) => scoredBattlefields(match?.actions ?? [], p, t)"
           @confirm="confirmScore"
           @cancel="popup = null"
         />
