@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import type { PlayerIndex } from '../../game'
 
-defineProps<{
+const props = defineProps<{
   name: string
   score: number
   active: boolean
@@ -21,6 +21,7 @@ function confirmResign() {
   emit('resign')
 }
 
+const scoreBtn = (color: string) => [btn, props.scoreDisabled ? 'bg-slate-700 text-slate-500' : color]
 const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-500'
 </script>
 
@@ -50,8 +51,8 @@ const btn = 'min-h-10 rounded-lg px-1 text-sm font-semibold disabled:cursor-not-
       {{ toast }}
     </p>
     <div class="grid shrink-0 grid-cols-3 gap-1.5">
-      <button type="button" :class="[btn, 'bg-sky-500 text-slate-950']" :disabled="disabled || scoreDisabled" @click="emit('conquer')">Conquer</button>
-      <button type="button" :class="[btn, 'bg-indigo-400 text-slate-950']" :disabled="disabled || scoreDisabled" @click="emit('hold')">Hold</button>
+      <button type="button" :class="scoreBtn('bg-sky-500 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="emit('conquer')">Conquer</button>
+      <button type="button" :class="scoreBtn('bg-indigo-400 text-slate-950')" :disabled="disabled" :aria-disabled="scoreDisabled || undefined" @click="emit('hold')">Hold</button>
       <button type="button" :class="[btn, 'bg-fuchsia-400 text-slate-950']" :disabled="disabled" @click="emit('special')">Special +1</button>
       <button type="button" :class="[btn, 'col-span-2 bg-slate-600']" :disabled="disabled || passDisabled" @click="emit('pass')">Pass Turn</button>
       <button type="button" :class="[btn, 'bg-slate-700']" @click="emit('undo')">Undo</button>
