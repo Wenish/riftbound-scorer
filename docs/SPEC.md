@@ -246,6 +246,7 @@ interface Match {
   firstPlayer: PlayerIndex;
   actions: MatchAction[];              // single ordered history, oldest first; Undo = remove the last entry
   winner?: PlayerIndex;
+  pauses: { from: number; to?: number }[]; // timer pauses (open while `to` is unset); paused time is excluded from game/turn durations
 }
 
 type MatchAction = ScoreEvent | PassTurn;
