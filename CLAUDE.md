@@ -22,3 +22,4 @@ Offline 1v1 score & match-timer app for Riftbound. Tauri 2 (iOS/Android) + PWA, 
 - Fully local: never add network calls, analytics, or account features.
 - Update `docs/SPEC.md` when a decision changes product behaviour (and resolve the matching open question).
 - Commits are made automatically by the orchestrator via the `commit` skill (Conventional Commits) when a plan closes. Never add Claude as co-author or any Claude attribution. Never push unless asked.
+- Package manager: npm (commit `package-lock.json`; don't use pnpm/yarn).

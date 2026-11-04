@@ -13,7 +13,6 @@ coverage
 # Logs
 *.log
 npm-debug.log*
-pnpm-debug.log*
 
 # Tauri
 src-tauri/target

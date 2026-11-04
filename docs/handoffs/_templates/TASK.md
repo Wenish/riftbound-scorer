@@ -30,7 +30,7 @@
 ### Verification
 
 ```sh
-<commands, e.g. pnpm test, pnpm vue-tsc --noEmit, pnpm build>
+<commands, e.g. npm test, npm run typecheck, npm run build>
 ```
 
 ---
